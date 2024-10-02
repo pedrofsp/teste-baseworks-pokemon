@@ -3,7 +3,16 @@ import Home from "./Views/HomePage.vue";
 </script>
 
 <template>
-  <Home></Home>
+  <div class="all-app">
+    <Home />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+@import "./style";
+
+.all-app {
+  background-color: $sand;
+  height: 100%;
+}
+</style>

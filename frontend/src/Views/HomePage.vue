@@ -2,8 +2,9 @@
   <NavbarComponent />
 
   <div class="container">
-    <form class="d-flex mt-3">
+    <form class="d-flex mt-3" @submit.prevent="filterPokemon">
       <input
+        v-model="search"
         class="form-control me-2"
         type="search"
         placeholder="Search"
@@ -74,6 +75,7 @@ import { ApiResponse, Pokemon, PokemonDetails } from "../types/interfaces";
 const pokemons = ref<Pokemon[]>([]);
 const next = ref<string | null>(null);
 const previous = ref<string | null>(null);
+const search = ref<string>(""); // Binding search with v-model
 
 const SetValues = async (response: ApiResponse) => {
   pokemons.value = response.results;
@@ -106,6 +108,20 @@ const FetchPrevious = async () => {
 const FetchData = async () => {
   const response = await get<ApiResponse>("/pokemon?limit=20&offset=0");
   SetValues(response);
+};
+
+const filterPokemon = async () => {
+  if (search.value) {
+    try {
+      const res = await get<PokemonDetails>(`/pokemon/${search.value}`);
+      pokemons.value = [{ name: search.value, url: "", details: res }];
+    } catch (error) {
+      console.error("Error fetching pokemon: ", error);
+      alert("Pokemon not found!");
+      FetchData();
+    }
+  }
+  search.value = "";
 };
 
 onMounted(() => {

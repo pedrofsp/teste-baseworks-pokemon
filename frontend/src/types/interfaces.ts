@@ -5,7 +5,7 @@ interface Pokemon {
 }
 
 interface PokemonDetails {
-  id: string;
+  id: number;
   sprites: {
     front_default: string;
     back_default: string;
@@ -18,8 +18,8 @@ interface PokemonDetails {
   types: [
     {
       type: {
-        name: String;
-        url: String;
+        name: string;
+        url: string;
       };
     }
   ];

@@ -13,6 +13,6 @@ export default {};
 <style lang="scss" scoped>
 @import "../style";
 .navbar {
-  background-color: $main-red;
+  background-color: $dark-blue;
 }
 </style>

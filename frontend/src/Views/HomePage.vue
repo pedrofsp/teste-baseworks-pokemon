@@ -1,5 +1,6 @@
 <template>
   <NavbarComponent />
+
   <div class="container">
     <form class="d-flex mt-3">
       <input
@@ -8,105 +9,112 @@
         placeholder="Search"
         aria-label="Search"
       />
-      <button class="btn btn-custom" type="submit">Search</button>
+      <ButtonComponent color="red" text="Search" />
     </form>
+
     <table class="table my-3">
       <thead>
         <tr>
+          <th scope="col">ID</th>
           <th scope="col">Name</th>
+          <th scope="col">Image</th>
           <th scope="col">Details</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in items" :key="index">
-          <td>{{ item.name }}</td>
-          <td><a :href="item.url" target="_blank">Link</a></td>
+        <tr v-for="(pokemon, index) in pokemons" :key="index">
+          <td>{{ pokemon.details?.id }}</td>
+          <td>{{ pokemon.name }}</td>
+          <td>
+            <img
+              v-if="
+                pokemon.details?.sprites.other['official-artwork'].front_default
+              "
+              :src="
+                pokemon.details.sprites.other['official-artwork'].front_default
+              "
+              alt="pokemon image"
+              width="50"
+              height="50"
+            />
+          </td>
+          <td>
+            <ModalComponent :pokemon="pokemon" />
+          </td>
         </tr>
       </tbody>
     </table>
 
     <div class="d-flex justify-content-center">
-      <button
-        class="btn btn-custom"
+      <ButtonComponent
+        color="red"
+        @click="FetchPrevious"
         :disabled="!previous"
-        @click="fetchPrevious"
-      >
-        Previous
-      </button>
+        text="Previous"
+      />
       <div class="mx-2"></div>
-      <button class="btn btn-custom" @click="fetchNext">Next</button>
+      <ButtonComponent
+        color="red"
+        @click="FetchNext"
+        text="Next"
+        :disabled="!next"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import NavbarComponent from "../components/NavbarComponent.vue";
+import ModalComponent from "../components/ModalComponent.vue";
+import ButtonComponent from "../components/ButtonComponent.vue";
 import { ref, onMounted } from "vue";
 import { get } from "../API/GenericCalls";
+import { ApiResponse, Pokemon, PokemonDetails } from "../types/interfaces";
 
-interface Pokemon {
-  name: string;
-  url: string;
-}
-
-interface ApiResponse {
-  results: Pokemon[];
-  next: string | null;
-  previous: string | null;
-}
-
-const items = ref<Pokemon[]>([]);
+const pokemons = ref<Pokemon[]>([]);
 const next = ref<string | null>(null);
 const previous = ref<string | null>(null);
 
-const setValues = (response: ApiResponse) => {
-  items.value = response.results;
+const SetValues = async (response: ApiResponse) => {
+  pokemons.value = response.results;
+
+  await Promise.all(
+    pokemons.value.map(async (pokemon) => {
+      const details = await get<PokemonDetails>(pokemon.url, true);
+      pokemon.details = details;
+    })
+  );
+
   next.value = response.next;
   previous.value = response.previous;
 };
 
-const fetchNext = async () => {
+const FetchNext = async () => {
   if (next.value) {
     const response = await get<ApiResponse>(next.value, true);
-    setValues(response);
+    SetValues(response);
   }
 };
 
-const fetchPrevious = async () => {
+const FetchPrevious = async () => {
   if (previous.value) {
     const response = await get<ApiResponse>(previous.value, true);
-    setValues(response);
+    SetValues(response);
   }
 };
 
-const fetchData = async () => {
+const FetchData = async () => {
   const response = await get<ApiResponse>("/pokemon?limit=20&offset=0");
-  setValues(response);
+  SetValues(response);
 };
 
 onMounted(() => {
-  fetchData();
+  FetchData();
 });
 </script>
 
 <style scoped lang="scss">
 @import "../style.scss";
-
-.btn-custom {
-  background-color: #fd1b54;
-  color: $white;
-
-  &:hover {
-    background-color: #e01a4f;
-    color: $white;
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    color: #999;
-    cursor: not-allowed;
-  }
-}
 
 th {
   background-color: $purple !important;

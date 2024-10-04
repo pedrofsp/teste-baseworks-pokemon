@@ -5,7 +5,7 @@ interface Pokemon {
 }
 
 interface PokemonDetails {
-  id: string;
+  id: number;
   sprites: {
     front_default: string;
     back_default: string;
@@ -18,8 +18,8 @@ interface PokemonDetails {
   types: [
     {
       type: {
-        name: String;
-        url: String;
+        name: string;
+        url: string;
       };
     }
   ];
@@ -31,6 +31,9 @@ interface PokemonDetails {
       url: string;
     };
   }[];
+  forms: {
+    name: string;
+  }[];
 }
 
 interface ApiResponse {
@@ -39,4 +42,43 @@ interface ApiResponse {
   previous: string | null;
 }
 
-export type { PokemonDetails, ApiResponse, Pokemon, PokemonType };
+interface PokemonChain {
+  chain: {
+    evolves_to: [
+      {
+        evolves_to: [
+          {
+            is_baby: Boolean;
+            species: {
+              name: string;
+              url: string;
+            };
+          }
+        ];
+        is_baby: Boolean;
+        species: {
+          name: string;
+          url: string;
+        };
+      }
+    ];
+    is_baby: Boolean;
+    species: {
+      name: string;
+      url: string;
+    };
+  };
+}
+
+interface PokemonSpecie {
+  evolution_chain: {
+    url: string;
+  };
+}
+export type {
+  PokemonDetails,
+  ApiResponse,
+  Pokemon,
+  PokemonSpecie,
+  PokemonChain,
+};

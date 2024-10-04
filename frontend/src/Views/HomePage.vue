@@ -2,12 +2,11 @@
   <NavbarComponent />
 
   <div class="container">
-    <form class="d-flex mt-3">
+    <form class="d-flex mt-3" @submit.prevent="filterPokemon">
       <input
+        v-model="search"
         class="form-control me-2"
-        type="search"
-        placeholder="Search"
-        aria-label="Search"
+        placeholder="Search by name or id ..."
       />
       <ButtonComponent color="red" text="Search" />
     </form>
@@ -17,7 +16,7 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Name</th>
-          <th scope="col">Image</th>
+          <th scope="col">Offical Art</th>
           <th scope="col">Details</th>
         </tr>
       </thead>
@@ -74,6 +73,7 @@ import { ApiResponse, Pokemon, PokemonDetails } from "../types/interfaces";
 const pokemons = ref<Pokemon[]>([]);
 const next = ref<string | null>(null);
 const previous = ref<string | null>(null);
+const search = ref<string>(""); // Binding search with v-model
 
 const SetValues = async (response: ApiResponse) => {
   pokemons.value = response.results;
@@ -106,6 +106,26 @@ const FetchPrevious = async () => {
 const FetchData = async () => {
   const response = await get<ApiResponse>("/pokemon?limit=20&offset=0");
   SetValues(response);
+};
+
+const filterPokemon = async () => {
+  if (search.value) {
+    try {
+      const res = await get<PokemonDetails>(`/pokemon/${search.value}`);
+      pokemons.value = [
+        {
+          name: res.forms[0].name,
+          url: `https://pokeapi.co/api/v2/pokemon/${res.id}/`,
+          details: res,
+        },
+      ];
+    } catch (error) {
+      console.error("Error fetching pokemon: ", error);
+      alert("Pokemon not found!");
+      FetchData();
+    }
+  }
+  search.value = "";
 };
 
 onMounted(() => {

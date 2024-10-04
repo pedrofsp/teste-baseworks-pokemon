@@ -13,6 +13,6 @@ import Home from "./Views/HomePage.vue";
 
 .all-app {
   background-color: $sand;
-  height: 100%;
+  min-height: 100vh;
 }
 </style>

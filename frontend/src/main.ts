@@ -8,9 +8,9 @@ import "bootstrap";
 
 /* Font Awesome */
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-library.add(faFilter);
+library.add(faFilter, faPlus);
 
 const app = createApp(App);
 app.component("FontAwesomeIcon", FontAwesomeIcon);

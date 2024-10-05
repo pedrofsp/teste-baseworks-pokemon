@@ -57,19 +57,14 @@
       </thead>
       <tbody>
         <tr v-for="(pokemon, index) in pokemons" :key="index">
-          <td>{{ pokemon.id }}</td>
-          <td>
+          <td class="align-middle">{{ pokemon.id }}</td>
+          <td class="align-middle">
             {{ pokemon.name.toUpperCase() }}
           </td>
-          <td>
-            <img
-              :src="pokemon.assets[0].sprites.other.showdown.front_default"
-              alt="pokemon image"
-              width="50"
-              height="50"
-            />
+          <td class="align-middle">
+            <SmallPokemonCard :id="pokemon.id" type="gif" />
           </td>
-          <td>
+          <td class="align-middle">
             <ModalComponent :pokemon="pokemon" />
           </td>
         </tr>
@@ -93,6 +88,7 @@
 import NavbarComponent from "../components/NavbarComponent.vue";
 import ModalComponent from "../components/ModalComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
+import SmallPokemonCard from "../components/SmallPokemonCard.vue";
 import { ref, onMounted } from "vue";
 
 import { GetPokemons } from "../API/PokemonFetch";

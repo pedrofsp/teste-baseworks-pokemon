@@ -1,5 +1,5 @@
 import { PostGraphQl } from "./BaseCall";
-import { GetPokemonsResponse } from "../types/interfaces";
+import { GetPokemonsResponse, PokemonEvolutions } from "../types/interfaces";
 
 export async function GetPokemons(
   limit: number = 20,
@@ -7,7 +7,7 @@ export async function GetPokemons(
   orderByName: boolean = false,
   name?: string,
   id?: number,
-  type?: string // Novo parâmetro opcional
+  type?: string
 ): Promise<GetPokemonsResponse | null> {
   let whereCondition = "";
 
@@ -16,7 +16,6 @@ export async function GetPokemons(
   } else if (name) {
     whereCondition = `, where: { name: { _ilike: "%${name}%" } }`;
   } else if (type) {
-    // Adicionando condição de filtro por tipo de Pokémon
     whereCondition = `, where: { pokemon_v2_pokemontypes: { pokemon_v2_type: { name: { _eq: "${type}" } } } }`;
   }
 
@@ -28,13 +27,19 @@ export async function GetPokemons(
         id
         name
         type: pokemon_v2_pokemontypes {
-            pokemon_v2_type {
+            type_object: pokemon_v2_type {
                 id
                 name
             }
         }
         assets: pokemon_v2_pokemonsprites {
             sprites
+        }
+        stats:pokemon_v2_pokemonstats {
+            base_stat
+            stat_name:pokemon_v2_stat {
+                name
+            }
         }
       }
     }
@@ -43,10 +48,35 @@ export async function GetPokemons(
   try {
     const res = await PostGraphQl<GetPokemonsResponse>(query);
     console.log(res);
-
     return res;
   } catch (error) {
     console.error("Error fetching Pokemons: ", error);
+    return null;
+  }
+}
+
+export async function GetPokemonsEvolutions(
+  pokemonId: number
+): Promise<PokemonEvolutions | null> {
+  const query = `
+      query GetPokemonEvolutions {
+        all_pokemon_evolutions: pokemon_v2_pokemonspecies(where: { id: { _eq: ${pokemonId} } }) {
+          evolution_chain: pokemon_v2_evolutionchain {
+            species: pokemon_v2_pokemonspecies {
+              name
+              id
+            }
+          }
+        }
+      }
+    `;
+
+  try {
+    const res = await PostGraphQl<any>(query);
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.error("Error fetching Pokémon evolutions: ", error);
     return null;
   }
 }

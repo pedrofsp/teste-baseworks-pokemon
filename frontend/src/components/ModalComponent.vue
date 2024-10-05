@@ -1,44 +1,50 @@
 <template>
-  <ButtonComponent
-    @click="pokemon.details ? OpenModal(pokemon.details.id) : null"
-    text="Details"
-    color="red"
-  />
-
+  <ButtonComponent @click="openModal" text="Details" color="purple" />
   <div
-    v-if="pokemon && pokemon.details"
+    v-if="pokemon && pokemon.id"
     class="modal fade"
-    :id="`modal-${pokemon.details.id}`"
+    :id="`modal-${pokemon.id}`"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-dialog-centered d-flex">
+    <div
+      class="modal-dialog modal-dialog-centered d-flex flex-column flex-md-row justify-content-center"
+    >
       <div class="modal-content left custom-shadow rounded">
-        <div class="d-flex flex-column justify-content-center h-100 px-5">
-          <div class="d-flex">
-            <h3>{{ pokemon.name.toUpperCase() }}</h3>
-          </div>
+        <div
+          class="custom-shadow d-flex flex-column justify-content-center h-100 px-5 py-4"
+        >
+          <h3>{{ pokemon.name.toUpperCase() }}</h3>
           <div class="frame d-flex justify-content-center rounded my-3">
             <img
               class="ilustration py-3 rounded"
-              :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.details.id}.svg`"
-              alt="Pokemon ilustration"
+              :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`"
+              alt="Pokemon illustration"
             />
           </div>
           <div class="d-flex">
-            <div v-for="type in pokemon.details.types" :key="type.type.name">
-              <img class="icon me-2" :src="GetTypeIcon(type.type.url)" />
+            <div v-for="type in pokemon.type" :key="type.type_object.id">
+              <img
+                class="icon me-2"
+                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/${type.type_object.id}.png`"
+                alt="Pokemon type icon"
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="middle"></div>
-      <div class="modal-content d-flex justify-content-end">
+      <div
+        class="modal-content right custom-shadow rounded d-flex flex-row flex-md-column justify-content-center justify-content-md-end"
+      >
         <div
-          class="right custom-shadow rounded d-flex flex-column justify-content-center"
+          class="d-flex flex-column justify-content-center px-md-5 py-md-4 py-3"
         >
-          <div class="chart-frame rounded p-3 mb-2">
+          <h4 class="mb-3">Pokemon Stats</h4>
+          <div
+            class="chart-frame d-flex flex-column justify-content-center w-100 rounded p-3"
+          >
             <Bar
               id="my-chart-id"
               class="align-self-center"
@@ -46,14 +52,16 @@
               :data="chartData"
             />
           </div>
-          <div class="bg-primary" v-if="chain">
-            <p>{{ chain.chain.species.name }}</p>
-            <p>
-              {{ chain.chain.evolves_to[0]?.species.name || "" }}
-            </p>
-            <p>
-              {{ chain.chain.evolves_to[0]?.evolves_to[0]?.species.name || "" }}
-            </p>
+          <div class="my-2"></div>
+          <h4 class="mb-3">Evolution chain</h4>
+          <div class="d-flex flex-row justify-content-between">
+            <div
+              v-for="evolution in pokemonEvolutions?.all_pokemon_evolutions[0]
+                .evolution_chain.species"
+              :key="evolution.id"
+            >
+              <SmallPokemonCard :id="evolution.id" :name="evolution.name" />
+            </div>
           </div>
         </div>
       </div>
@@ -61,10 +69,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import ButtonComponent from "./ButtonComponent.vue";
-import { Pokemon, PokemonChain, PokemonSpecie } from "../types/interfaces";
+import SmallPokemonCard from "./SmallPokemonCard.vue";
+import { ref, computed } from "vue";
+import { Pokemon, PokemonEvolutions } from "../types/interfaces";
+import { GetPokemonsEvolutions } from "../API/PokemonFetch";
 import { Modal } from "bootstrap";
 import { Bar } from "vue-chartjs";
 import {
@@ -76,7 +86,6 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { get } from "../API/BaseCall";
 
 ChartJS.register(
   Title,
@@ -87,69 +96,39 @@ ChartJS.register(
   LinearScale
 );
 
-export default defineComponent({
-  name: "ModalComponent",
-  components: { ButtonComponent, Bar },
-  props: {
-    pokemon: {
-      type: Object as () => Pokemon,
-      required: true,
+const props = defineProps<{ pokemon: Pokemon }>();
+
+let modal = ref<Modal | null>(null);
+let pokemonEvolutions = ref<PokemonEvolutions | null>(null);
+
+const chartData = ref({
+  labels: ["HP", "AT", "DF", "SA", "SD", "SP"],
+  datasets: [
+    {
+      label: "Pokemon Stats",
+      data: computed(() => {
+        return props.pokemon.stats.map((stat) => stat.base_stat);
+      }),
+      backgroundColor: "rgba(255, 255, 255, 1)",
+      barThickness: 10,
     },
-  },
-  data() {
-    return {
-      modal: null as { show: () => void; hide: () => void } | null,
-      chain: null as PokemonChain | null,
-    };
-  },
-  computed: {
-    chartData() {
-      return {
-        labels: ["HP", "AT", "DF", "SA", "SD", "SP"],
-        datasets: [
-          {
-            label: "Pokemon Stats",
-            data:
-              this.pokemon.details?.stats.map((stat) => stat.base_stat) || [],
-            backgroundColor: "rgba(255, 255, 255, 1)",
-            barThickness: 10,
-          },
-        ],
-      };
-    },
-  },
-  methods: {
-    OpenModal(id: number) {
-      const modalElement = document.getElementById(`modal-${id}`);
-      if (modalElement) {
-        this.modal = new Modal(modalElement);
-        if (this.modal) this.modal.show();
-      }
-      this.GetPokemonChain();
-    },
-    GetTypeIcon(url: string) {
-      const id = url.split("/").slice(-2, -1)[0];
-      return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/${id}.png`;
-    },
-    async GetPokemonChain() {
-      const specieRes = await get<PokemonSpecie>(
-        `/pokemon-species/${this.pokemon.details?.id}/`
-      );
-      const chainRes = await get<PokemonChain>(
-        specieRes.evolution_chain.url,
-        true
-      );
-      console.log("CHAIN ------------------->", chainRes);
-      this.chain = chainRes;
-    },
-  },
+  ],
 });
+
+const openModal = async () => {
+  const modalElement = document.getElementById(`modal-${props.pokemon.id}`);
+  if (modalElement) {
+    pokemonEvolutions.value = await GetPokemonsEvolutions(props.pokemon.id);
+    modal.value = new Modal(modalElement);
+    modal.value.show();
+  }
+};
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @import "../style";
 
-$initial-height: 500px;
+$initial-height: 450px;
 $carousel-image-height: 200px;
 $carousel-border: 20px;
 
@@ -172,7 +151,7 @@ $carousel-border: 20px;
 .modal-content {
   color: $white;
   background-color: transparent;
-  height: 500px;
+  height: $initial-height;
   border: none;
   border-radius: 0;
 }
@@ -181,8 +160,11 @@ $carousel-border: 20px;
   background-color: $purple;
 }
 
+.icon {
+  width: 100px;
+}
+
 .middle {
-  background: rgb(253, 27, 84);
   background: linear-gradient(
     90deg,
     rgba(253, 27, 84, 1) 0%,
@@ -190,28 +172,43 @@ $carousel-border: 20px;
     rgba(5, 12, 39, 1) 100%
   );
   width: 50px;
-  height: 500px;
+  height: $initial-height;
   z-index: 1;
 }
 
 .right {
   background-color: $main-red;
-  height: calc(100% - 40px); // Define a altura como 100% menos 20 pixels
+  height: calc(100% - 40px);
 }
 
 .custom-shadow {
-  -webkit-box-shadow: 5px 10px 1px 2px rgba(0, 0, 0, 0.7);
-  -moz-box-shadow: 5px 10px 1px 2px rgba(0, 0, 0, 0.7);
   box-shadow: 5px 10px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-.icon {
-  width: 100px;
+.chart-frame {
+  background-color: $dark-blue;
 }
 
-.chart-frame {
-  margin: 0 auto;
-  width: 80%;
-  background-color: $dark-blue;
+@media only screen and (max-width: 767px) {
+  .middle {
+    background: linear-gradient(
+      180deg,
+      rgba(253, 27, 84, 1) 0%,
+      rgba(203, 34, 93, 1) 69%,
+      rgba(5, 12, 39, 1) 100%
+    );
+    width: 70%;
+    height: 15px;
+  }
+  .modal-content {
+    width: 70%;
+    height: unset;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .modal-content {
+    width: 90%;
+  }
 }
 </style>

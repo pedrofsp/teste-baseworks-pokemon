@@ -33,6 +33,26 @@ const props = defineProps({
   }
 }
 
+.dark-blue {
+  background-color: $dark-blue;
+  color: $white;
+  &:hover {
+    background-color: $dark-blue;
+    color: $white;
+    opacity: 0.75;
+  }
+}
+
+.purple {
+  background-color: $purple;
+  color: $white;
+  &:hover {
+    background-color: $purple;
+    color: $white;
+    opacity: 0.75;
+  }
+}
+
 .disabled {
   background-color: #ccc;
   color: #999;

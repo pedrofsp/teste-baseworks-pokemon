@@ -1,17 +1,4 @@
-const baseUrlRest = "https://pokeapi.co/api/v2";
 const graphQLUrl = "https://beta.pokeapi.co/graphql/v1beta";
-
-async function get<T>(endpoint: string, isUrl: boolean = false): Promise<T> {
-  try {
-    let res: Response;
-    if (isUrl) res = await fetch(endpoint);
-    else res = await fetch(baseUrlRest + endpoint);
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching data: " + error);
-    throw error;
-  }
-}
 
 async function PostGraphQl<T>(query: string, variables?: any): Promise<T> {
   try {
@@ -39,4 +26,4 @@ async function PostGraphQl<T>(query: string, variables?: any): Promise<T> {
   }
 }
 
-export { get, PostGraphQl };
+export { PostGraphQl };

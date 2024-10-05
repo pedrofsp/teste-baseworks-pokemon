@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import ButtonComponent from "./ButtonComponent.vue";
 import { Pokemon, PokemonChain, PokemonSpecie } from "../types/interfaces";
 import { Modal } from "bootstrap";
@@ -76,7 +76,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { get } from "../API/GenericCalls";
+import { get } from "../API/BaseCall";
 
 ChartJS.register(
   Title,

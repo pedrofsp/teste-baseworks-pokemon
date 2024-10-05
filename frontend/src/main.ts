@@ -6,4 +6,12 @@ import "./style.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
-createApp(App).mount("#app");
+/* Font Awesome */
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+library.add(faFilter);
+
+const app = createApp(App);
+app.component("FontAwesomeIcon", FontAwesomeIcon);
+app.mount("#app");

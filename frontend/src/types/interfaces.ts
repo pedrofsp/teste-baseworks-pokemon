@@ -1,7 +1,16 @@
 interface Pokemon {
+  id: number;
   name: string;
   url: string;
-  details?: PokemonDetails;
+  assets: {
+    sprites: {
+      other: {
+        showdown: {
+          front_default: string;
+        };
+      };
+    };
+  }[];
 }
 
 interface PokemonDetails {
@@ -34,6 +43,10 @@ interface PokemonDetails {
   forms: {
     name: string;
   }[];
+}
+
+interface GetPokemonsResponse {
+  all_pokemons: Pokemon[];
 }
 
 interface ApiResponse {
@@ -81,4 +94,5 @@ export type {
   Pokemon,
   PokemonSpecie,
   PokemonChain,
+  GetPokemonsResponse,
 };

@@ -2,13 +2,48 @@
   <NavbarComponent />
 
   <div class="container">
-    <form class="d-flex mt-3" @submit.prevent="filterPokemon">
-      <input
-        v-model="search"
-        class="form-control me-2"
-        placeholder="Search by name or id ..."
-      />
-      <ButtonComponent color="red" text="Search" />
+    <form class="d-flex flex-column mt-3" @submit.prevent="filterPokemon">
+      <div class="d-flex">
+        <input
+          v-model="search"
+          class="form-control"
+          placeholder="Search by name or id ..."
+        />
+        <ButtonComponent class="mx-2" text="Search" color="red" />
+
+        <ButtonComponent
+          @click="toggleFilter($event)"
+          :isFilter="true"
+          color="red"
+        />
+      </div>
+
+      <div v-if="showFilter" class="d-flex mt-3">
+        <select v-model="selectedType" class="form-select me-2">
+          <option value="">All Types</option>
+          <option value="fire">Fire</option>
+          <option value="water">Water</option>
+          <option value="grass">Grass</option>
+          <option value="electric">Electric</option>
+          <option value="ice">Ice</option>
+          <option value="rock">Rock</option>
+          <option value="ground">Ground</option>
+          <option value="psychic">Psychic</option>
+          <option value="dragon">Dragon</option>
+          <option value="dark">Dark</option>
+        </select>
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="searchTypeSwitch"
+            v-model="searchById"
+          />
+          <label class="form-check-label" for="searchTypeSwitch">
+            Search by ID
+          </label>
+        </div>
+      </div>
     </form>
 
     <table class="table my-3">
@@ -16,22 +51,19 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Name</th>
-          <th scope="col">Offical Art</th>
+          <th scope="col">Art</th>
           <th scope="col">Details</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(pokemon, index) in pokemons" :key="index">
-          <td>{{ pokemon.details?.id }}</td>
-          <td>{{ pokemon.name }}</td>
+          <td>{{ pokemon.id }}</td>
+          <td>
+            {{ pokemon.name.toUpperCase() }}
+          </td>
           <td>
             <img
-              v-if="
-                pokemon.details?.sprites.other['official-artwork'].front_default
-              "
-              :src="
-                pokemon.details.sprites.other['official-artwork'].front_default
-              "
+              :src="pokemon.assets[0].sprites.other.showdown.front_default"
               alt="pokemon image"
               width="50"
               height="50"
@@ -48,16 +80,11 @@
       <ButtonComponent
         color="red"
         @click="FetchPrevious"
-        :disabled="!previous"
+        :disabled="offset === 0"
         text="Previous"
       />
       <div class="mx-2"></div>
-      <ButtonComponent
-        color="red"
-        @click="FetchNext"
-        text="Next"
-        :disabled="!next"
-      />
+      <ButtonComponent color="red" @click="FetchNext" text="Next" />
     </div>
   </div>
 </template>
@@ -67,65 +94,67 @@ import NavbarComponent from "../components/NavbarComponent.vue";
 import ModalComponent from "../components/ModalComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import { ref, onMounted } from "vue";
-import { get } from "../API/GenericCalls";
-import { ApiResponse, Pokemon, PokemonDetails } from "../types/interfaces";
+
+import { GetPokemons } from "../API/PokemonFetch";
+import { Pokemon, GetPokemonsResponse } from "../types/interfaces";
 
 const pokemons = ref<Pokemon[]>([]);
-const next = ref<string | null>(null);
-const previous = ref<string | null>(null);
-const search = ref<string>(""); // Binding search with v-model
+const limit = 20;
+const offset = ref<number>(0);
+let search = ref<string>("");
+let selectedType = ref<string>("");
+let searchById = ref<boolean>(false);
+let showFilter = ref<boolean>(false);
 
-const SetValues = async (response: ApiResponse) => {
-  pokemons.value = response.results;
-
-  await Promise.all(
-    pokemons.value.map(async (pokemon) => {
-      const details = await get<PokemonDetails>(pokemon.url, true);
-      pokemon.details = details;
-    })
-  );
-
-  next.value = response.next;
-  previous.value = response.previous;
+const SetValues = async (response: GetPokemonsResponse) => {
+  pokemons.value = response.all_pokemons;
 };
 
 const FetchNext = async () => {
-  if (next.value) {
-    const response = await get<ApiResponse>(next.value, true);
-    SetValues(response);
-  }
+  offset.value += limit;
+  await FetchData();
 };
 
 const FetchPrevious = async () => {
-  if (previous.value) {
-    const response = await get<ApiResponse>(previous.value, true);
-    SetValues(response);
+  if (offset.value > 0) {
+    offset.value -= limit;
+    await FetchData();
   }
 };
 
-const FetchData = async () => {
-  const response = await get<ApiResponse>("/pokemon?limit=20&offset=0");
-  SetValues(response);
+const FetchData = async (id?: number) => {
+  const response = await GetPokemons(
+    limit,
+    offset.value,
+    false,
+    search.value,
+    id,
+    selectedType.value
+  );
+  if (response) SetValues(response);
 };
 
 const filterPokemon = async () => {
+  offset.value = 0;
+
   if (search.value) {
-    try {
-      const res = await get<PokemonDetails>(`/pokemon/${search.value}`);
-      pokemons.value = [
-        {
-          name: res.forms[0].name,
-          url: `https://pokeapi.co/api/v2/pokemon/${res.id}/`,
-          details: res,
-        },
-      ];
-    } catch (error) {
-      console.error("Error fetching pokemon: ", error);
-      alert("Pokemon not found!");
-      FetchData();
+    if (searchById.value) {
+      const id = parseInt(search.value, 10);
+      if (!isNaN(id)) {
+        await FetchData(id);
+      }
+    } else {
+      await FetchData();
     }
+  } else {
+    pokemons.value = [];
+    await FetchData();
   }
-  search.value = "";
+};
+
+const toggleFilter = (event: Event) => {
+  event.preventDefault();
+  showFilter.value = !showFilter.value;
 };
 
 onMounted(() => {

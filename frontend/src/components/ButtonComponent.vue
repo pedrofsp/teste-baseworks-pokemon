@@ -1,11 +1,23 @@
 <template>
-  <button :class="`btn ${props.color} ${disabled ? 'disabled' : ''}`">
+  <button
+    :class="`btn ${props.color} ${disabled ? 'disabled' : ''}`"
+    :type="type"
+  >
     {{ text }}
+    <font-awesome-icon v-if="isFilter" class="icon" :icon="['fas', 'filter']" />
   </button>
 </template>
 
 <script setup>
-const props = defineProps({ text: String, disabled: Boolean, color: String });
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+const props = defineProps({
+  text: String,
+  disabled: Boolean,
+  color: String,
+  isFilter: Boolean,
+  type: String,
+});
 </script>
 
 <style lang="scss" scoped>

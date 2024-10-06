@@ -211,4 +211,10 @@ $carousel-border: 20px;
     width: 90%;
   }
 }
+
+.chart-frame {
+  margin: auto;
+  width: 80%;
+  background-color: $dark-blue;
+}
 </style>

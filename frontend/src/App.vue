@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Home from "./Views/HomePage.vue";
+import NavbarComponent from "./components/NavbarComponent.vue";
 </script>
 
 <template>
   <div class="all-app">
-    <Home />
+    <NavbarComponent />
   </div>
 </template>
 

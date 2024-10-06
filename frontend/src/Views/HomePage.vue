@@ -1,6 +1,4 @@
 <template>
-  <NavbarComponent />
-
   <div class="container">
     <form class="d-flex flex-column mt-3" @submit.prevent="filterPokemon">
       <div class="d-flex">
@@ -85,7 +83,6 @@
 </template>
 
 <script setup lang="ts">
-import NavbarComponent from "../components/NavbarComponent.vue";
 import ModalComponent from "../components/ModalComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import SmallPokemonCard from "../components/SmallPokemonCard.vue";

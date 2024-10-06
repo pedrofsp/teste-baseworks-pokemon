@@ -10,8 +10,9 @@ import "bootstrap";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { router } from "./router";
 library.add(faFilter, faPlus);
 
-const app = createApp(App);
+const app = createApp(App).use(router);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 app.mount("#app");

@@ -1,4 +1,6 @@
 <template>
+  <Loading :isLoading="isLoading" />
+
   <div class="container">
     <form class="d-flex flex-column mt-3" @submit.prevent="filterPokemon">
       <div class="d-flex">
@@ -86,18 +88,19 @@
 import ModalComponent from "../components/ModalComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import SmallPokemonCard from "../components/SmallPokemonCard.vue";
+import Loading from "../components/Loading.vue";
 import { ref, onMounted } from "vue";
-
 import { GetPokemons } from "../API/PokemonFetch";
 import { Pokemon, GetPokemonsResponse } from "../types/interfaces";
 
-const pokemons = ref<Pokemon[]>([]);
-const limit = 20;
-const offset = ref<number>(0);
+let pokemons = ref<Pokemon[]>([]);
+let limit = 15;
+let offset = ref<number>(0);
 let search = ref<string>("");
 let selectedType = ref<string>("");
 let searchById = ref<boolean>(false);
 let showFilter = ref<boolean>(false);
+let isLoading = ref<boolean>(true);
 
 const SetValues = async (response: GetPokemonsResponse) => {
   pokemons.value = response.all_pokemons;
@@ -116,6 +119,7 @@ const FetchPrevious = async () => {
 };
 
 const FetchData = async (id?: number) => {
+  isLoading.value = true;
   const response = await GetPokemons(
     limit,
     offset.value,
@@ -124,6 +128,7 @@ const FetchData = async (id?: number) => {
     id,
     selectedType.value
   );
+  isLoading.value = false;
   if (response) SetValues(response);
 };
 

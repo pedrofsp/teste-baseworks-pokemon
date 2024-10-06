@@ -45,12 +45,7 @@
           <div
             class="chart-frame d-flex flex-column justify-content-center w-100 rounded p-3"
           >
-            <Bar
-              id="my-chart-id"
-              class="align-self-center"
-              :options="chartOptions"
-              :data="chartData"
-            />
+            <Bar id="my-chart-id" class="align-self-center" :data="chartData" />
           </div>
           <div class="my-2"></div>
           <h4 class="mb-3">Evolution chain</h4>

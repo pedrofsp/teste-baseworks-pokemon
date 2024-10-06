@@ -45,32 +45,7 @@
         </div>
       </div>
     </form>
-
-    <table class="table my-3">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Art</th>
-          <th scope="col">Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(pokemon, index) in pokemons" :key="index">
-          <td class="align-middle">{{ pokemon.id }}</td>
-          <td class="align-middle">
-            {{ pokemon.name.toUpperCase() }}
-          </td>
-          <td class="align-middle">
-            <SmallPokemonCard :id="pokemon.id" type="gif" />
-          </td>
-          <td class="align-middle">
-            <ModalComponent :pokemon="pokemon" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+    <TableComponent :pokemons="pokemons" />
     <div class="d-flex justify-content-center">
       <ButtonComponent
         color="red"
@@ -85,9 +60,8 @@
 </template>
 
 <script setup lang="ts">
-import ModalComponent from "../components/ModalComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
-import SmallPokemonCard from "../components/SmallPokemonCard.vue";
+import TableComponent from "../components/TableComponent.vue";
 import Loading from "../components/Loading.vue";
 import { ref, onMounted } from "vue";
 import { GetPokemons } from "../API/PokemonFetch";
@@ -160,16 +134,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
-@import "../style.scss";
-
-th {
-  background-color: $purple !important;
-  color: $white !important;
-}
-
-table {
-  border-radius: 5px;
-  overflow: hidden;
-}
-</style>
+<style scoped lang="scss"></style>

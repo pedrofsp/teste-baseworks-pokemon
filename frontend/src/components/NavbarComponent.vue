@@ -1,9 +1,11 @@
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container justify-content-beteen">
-      <div>
+      <div class="d-flex">
         <img src="../assets/pokemonLogo.svg" alt="Navbar Icon" width="150" />
-        <font-awesome-icon class="icon mx-3" :icon="['fas', 'plus']" />
+        <div class="d-flex flex-column justify-content-center">
+          <font-awesome-icon class="icon mx-3" :icon="['fas', 'plus']" />
+        </div>
         <img
           class="baseworks p-1"
           src="../assets/baseworks.svg"
@@ -54,7 +56,8 @@ export default {
   padding: 0 15px;
   text-decoration: none;
   &:hover {
-    opacity: 0.8;
+    color: $light-gray;
+    text-decoration: underline;
   }
 }
 </style>

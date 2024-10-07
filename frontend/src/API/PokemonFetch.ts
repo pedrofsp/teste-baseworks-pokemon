@@ -11,13 +11,27 @@ export async function GetPokemons(
 ): Promise<GetPokemonsResponse | null> {
   let whereCondition = "";
 
-  if (id)
-    whereCondition = `, where: { id: { _in: [${id.map((id) => {
-      return `${id},`;
-    })}] } }`;
-  else if (name) whereCondition = `, where: { name: { _ilike: "%${name}%" } }`;
-  else if (type)
-    whereCondition = `, where: { pokemon_v2_pokemontypes: { pokemon_v2_type: { name: { _eq: "${type}" } } } }`;
+  if (id) {
+    whereCondition = `, where: { id: { _in: [${id.map((id) => `${id},`)}] } }`;
+  } else {
+    // Combine the name and type filter conditions
+    let conditions: string[] = [];
+
+    if (name) {
+      conditions.push(`name: { _ilike: "%${name}%" }`);
+    }
+
+    if (type) {
+      conditions.push(
+        `pokemon_v2_pokemontypes: { pokemon_v2_type: { name: { _eq: "${type}" } } }`
+      );
+    }
+
+    // Join the conditions using an AND operator to ensure both are applied
+    if (conditions.length > 0) {
+      whereCondition = `, where: { ${conditions.join(", ")} }`;
+    }
+  }
 
   const orderBy = orderByName ? "name: asc" : "id: asc";
   const query = `
@@ -26,19 +40,19 @@ export async function GetPokemons(
         id
         name
         type: pokemon_v2_pokemontypes {
-            type_object: pokemon_v2_type {
-                id
-                name
-            }
+          type_object: pokemon_v2_type {
+            id
+            name
+          }
         }
         assets: pokemon_v2_pokemonsprites {
-            sprites
+          sprites
         }
-        stats:pokemon_v2_pokemonstats {
-            base_stat
-            stat_name:pokemon_v2_stat {
-                name
-            }
+        stats: pokemon_v2_pokemonstats {
+          base_stat
+          stat_name: pokemon_v2_stat {
+            name
+          }
         }
       }
     }

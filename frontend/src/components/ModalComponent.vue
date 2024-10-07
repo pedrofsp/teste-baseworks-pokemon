@@ -1,32 +1,41 @@
 <template>
   <ButtonComponent @click="openModal" text="Details" color="purple" />
   <div
-    v-if="pokemon && pokemon.id"
+    v-if="pokemon?.id"
     class="modal fade"
     :id="`modal-${pokemon.id}`"
     tabindex="-1"
-    aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
     <div
-      class="modal-dialog modal-dialog-centered d-flex flex-column flex-md-row justify-content-center"
+      class="modal-dialog modal-dialog-centered d-flex flex-column flex-lg-row justify-content-center"
     >
-      <div class="modal-content left custom-shadow rounded">
+      <div class="modal-content custom-shadow left rounded">
         <div
-          class="custom-shadow d-flex flex-column justify-content-center h-100 px-5 py-4"
+          class="content d-flex flex-column justify-content-center px-5 py-4"
         >
-          <h3>{{ pokemon.name.toUpperCase() }}</h3>
+          <div class="d-flex justify-content-between">
+            <h3>{{ pokemon.name.toUpperCase() }}</h3>
+            <font-awesome-icon
+              class="close-modal"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              :icon="['fas', 'xmark']"
+            />
+          </div>
+
           <div class="frame d-flex justify-content-center rounded my-3">
             <img
-              class="ilustration py-3 rounded"
+              class="ilustration align-self-center py-3 rounded"
               :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`"
               alt="Pokemon illustration"
             />
           </div>
-          <div class="d-flex">
+
+          <div class="d-flex justify-content-center justify-content-lg-start">
             <div v-for="type in pokemon.type" :key="type.type_object.id">
               <img
-                class="icon me-2"
+                class="type-icon me-2"
                 :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/${type.type_object.id}.png`"
                 alt="Pokemon type icon"
               />
@@ -34,22 +43,19 @@
           </div>
         </div>
       </div>
+
       <div class="middle"></div>
-      <div
-        class="modal-content right custom-shadow rounded d-flex flex-row flex-md-column justify-content-center justify-content-md-end"
-      >
+
+      <div class="modal-content custom-shadow right rounded">
         <div
-          class="d-flex flex-column justify-content-center px-md-5 py-md-4 py-3"
+          class="content d-flex flex-column justify-content-center h-100 px-5 py-4"
         >
-          <h4 class="mb-3">Pokemon Stats</h4>
-          <div
-            class="chart-frame d-flex flex-column justify-content-center w-100 rounded p-3"
-          >
+          <h4>Pokemon Stats</h4>
+          <div class="chart-frame rounded">
             <Bar id="my-chart-id" class="align-self-center" :data="chartData" />
           </div>
-          <div class="my-2"></div>
-          <h4 class="mb-3">Evolution chain</h4>
-          <div class="d-flex flex-row justify-content-between">
+          <h4 class="my-3">Evolution chain</h4>
+          <div class="evolution-cards d-flex justify-content-between">
             <div
               v-for="evolution in pokemonEvolutions?.all_pokemon_evolutions[0]
                 .evolution_chain.species"
@@ -93,8 +99,8 @@ ChartJS.register(
 
 const props = defineProps<{ pokemon: Pokemon }>();
 
-let modal = ref<typeof Modal | null>(null);
-let pokemonEvolutions = ref<PokemonEvolutions | null>(null);
+const modal = ref<typeof Modal | null>(null);
+const pokemonEvolutions = ref<PokemonEvolutions | null>(null);
 
 const chartData = ref({
   labels: ["HP", "AT", "DF", "SA", "SD", "SP"],
@@ -142,22 +148,40 @@ $carousel-border: 20px;
 }
 
 .modal-content {
-  color: $white;
-  background-color: transparent;
   height: $initial-height;
-  border: none;
+  border: 1px solid $dark-blue;
   border-radius: 0;
+  background-color: transparent;
 }
 
 .left {
   background-color: $purple;
 }
 
-.icon {
+.right {
+  background-color: $main-red;
+}
+
+.custom-shadow {
+  box-shadow: 5px 10px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.content {
+  height: 100%;
+  color: $white;
+}
+
+.close-modal {
+  cursor: pointer;
+  font-size: $xl;
+}
+
+.type-icon {
   width: 100px;
 }
 
 .middle {
+  z-index: 1;
   background: linear-gradient(
     90deg,
     rgba(253, 27, 84, 1) 0%,
@@ -166,24 +190,18 @@ $carousel-border: 20px;
   );
   width: 50px;
   height: $initial-height;
-  z-index: 1;
-}
-
-.right {
-  background-color: $main-red;
-  height: calc(100% - 40px);
-}
-
-.custom-shadow {
-  box-shadow: 5px 10px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .chart-frame {
   background-color: $dark-blue;
+  width: inherit;
 }
 
-//TABLET
-@media only screen and (max-width: 767px) {
+.evolution-cards {
+  overflow-x: auto;
+}
+
+@media (max-width: 993px) {
   .middle {
     background: linear-gradient(
       180deg,
@@ -194,22 +212,36 @@ $carousel-border: 20px;
     width: 70%;
     height: 15px;
   }
+
   .modal-content {
     width: 70%;
-    height: unset;
+    height: inherit;
   }
 }
 
-//MOBILE
-@media only screen and (max-width: 576px) {
+@media (max-width: 576px) {
   .modal-content {
-    width: 90%;
+    width: 80%;
   }
-}
 
-.chart-frame {
-  margin: auto;
-  width: 80%;
-  background-color: $dark-blue;
+  .content {
+    height: calc($initial-height - 180px);
+  }
+
+  .type-icon {
+    width: 80px;
+  }
+
+  .ilustration {
+    height: calc($carousel-image-height - ($carousel-border * 2) - 50px);
+  }
+
+  h3 {
+    font-size: $lg;
+  }
+
+  h4 {
+    font-size: $md;
+  }
 }
 </style>

@@ -9,7 +9,7 @@
       alt="Image of a pokemon"
     />
     <div class="bottom-shadow"></div>
-    <p v-if="props.name">{{ props.name.toUpperCase() }}</p>
+    <p class="mt-1" v-if="props.name">{{ props.name }}</p>
   </div>
 </template>
 
@@ -53,5 +53,12 @@ $offset: -8px;
   background-color: rgba(0, 0, 0, 0.489);
   width: 65%;
   height: 15px;
+}
+
+@media (max-width: 576px) {
+  @import "../style";
+  p {
+    font-size: $xs;
+  }
 }
 </style>

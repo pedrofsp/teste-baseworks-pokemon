@@ -13,10 +13,12 @@ import {
   faPlus,
   faHeart,
   faShieldHeart,
+  faPlay,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { router } from "./router";
-library.add(faFilter, faPlus, faHeart, faShieldHeart);
+library.add(faFilter, faPlus, faHeart, faShieldHeart, faPlay, faXmark);
 
 const app = createApp(App).use(router);
 app.component("FontAwesomeIcon", FontAwesomeIcon);

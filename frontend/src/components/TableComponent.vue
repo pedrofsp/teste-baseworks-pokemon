@@ -88,7 +88,7 @@ th {
 }
 
 table {
-  border-radius: 5px;
+  border-radius: 20%;
 }
 
 .heart-icon {

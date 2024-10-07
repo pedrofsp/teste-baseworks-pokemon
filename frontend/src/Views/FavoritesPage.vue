@@ -14,7 +14,7 @@ import { Pokemon } from "../types/interfaces";
 import { onMounted, ref } from "vue";
 
 let isLoading = ref<boolean>(true);
-let favPokemons = ref<Pokemon[] | null>(null);
+let favPokemons = ref<Pokemon[]>([]);
 
 const FetchData = async () => {
   isLoading.value = true;

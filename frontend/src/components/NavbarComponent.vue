@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <div class="d-flex align-items-center">
         <img
@@ -18,7 +18,7 @@
       </div>
 
       <button
-        class="navbar-toggler bg-light"
+        class="navbar-toggler"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
@@ -29,7 +29,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse justify-content-end">
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <RouterLink
           class="nav-link text-center"
           :class="{ active: $route.fullPath === '/' }"

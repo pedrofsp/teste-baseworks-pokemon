@@ -17,7 +17,7 @@
 const props = defineProps({
   name: String,
   id: Number,
-  type: String | null,
+  type: String,
 });
 </script>
 

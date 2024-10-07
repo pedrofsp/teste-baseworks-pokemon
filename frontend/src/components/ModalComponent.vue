@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import ButtonComponent from "./ButtonComponent.vue";
 import SmallPokemonCard from "./SmallPokemonCard.vue";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { Pokemon, PokemonEvolutions } from "../types/interfaces";
 import { GetPokemonsEvolutions } from "../API/PokemonFetch";
 import { Modal } from "bootstrap";
@@ -93,7 +93,7 @@ ChartJS.register(
 
 const props = defineProps<{ pokemon: Pokemon }>();
 
-let modal = ref<Modal | null>(null);
+let modal = ref<typeof Modal | null>(null);
 let pokemonEvolutions = ref<PokemonEvolutions | null>(null);
 
 const chartData = ref({
@@ -101,9 +101,7 @@ const chartData = ref({
   datasets: [
     {
       label: "Pokemon Stats",
-      data: computed(() => {
-        return props.pokemon.stats.map((stat) => stat.base_stat);
-      }),
+      data: props.pokemon.stats.map((stat) => stat.base_stat),
       backgroundColor: "rgba(255, 255, 255, 1)",
       barThickness: 10,
     },

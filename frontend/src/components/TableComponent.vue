@@ -51,7 +51,7 @@ import SmallPokemonCard from "./SmallPokemonCard.vue";
 import ModalComponent from "./ModalComponent.vue";
 import { Pokemon } from "../types/interfaces";
 const props = defineProps<{
-  pokemons: Pokemon[];
+  pokemons: Pokemon[] | [];
 }>();
 
 const favoritePokemons = ref<number[]>([]);

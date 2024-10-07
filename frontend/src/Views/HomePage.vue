@@ -1,8 +1,8 @@
 <template>
   <Loading :isLoading="isLoading" />
 
-  <div class="container">
-    <form class="d-flex flex-column mt-3" @submit.prevent="filterPokemon">
+  <div class="container mt-3">
+    <form class="d-flex flex-column" @submit.prevent="filterPokemon">
       <div class="d-flex">
         <input
           v-model="search"
@@ -14,7 +14,7 @@
         <ButtonComponent
           @click="toggleFilter($event)"
           :isFilter="true"
-          color="red"
+          color="dark-blue"
         />
       </div>
 
@@ -45,7 +45,9 @@
         </div>
       </div>
     </form>
-    <TableComponent :pokemons="pokemons" />
+
+    <TableComponent class="my-3" :pokemons="pokemons" />
+
     <div class="d-flex justify-content-center">
       <ButtonComponent
         color="red"
@@ -94,12 +96,13 @@ const FetchPrevious = async () => {
 
 const FetchData = async (id?: number) => {
   isLoading.value = true;
+  const ids = id ? [id] : undefined;
   const response = await GetPokemons(
     limit,
     offset.value,
     false,
     search.value,
-    id,
+    ids,
     selectedType.value
   );
   isLoading.value = false;

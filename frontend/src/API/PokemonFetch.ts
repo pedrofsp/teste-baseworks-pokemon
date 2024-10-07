@@ -5,22 +5,21 @@ export async function GetPokemons(
   limit: number = 20,
   offset: number = 0,
   orderByName: boolean = false,
-  name?: string,
-  id?: number,
-  type?: string
+  name?: string | null,
+  id?: number[] | null,
+  type?: string | null
 ): Promise<GetPokemonsResponse | null> {
   let whereCondition = "";
 
-  if (id !== undefined) {
-    whereCondition = `, where: { id: { _eq: ${id} } }`;
-  } else if (name) {
-    whereCondition = `, where: { name: { _ilike: "%${name}%" } }`;
-  } else if (type) {
+  if (id)
+    whereCondition = `, where: { id: { _in: [${id.map((id) => {
+      return `${id},`;
+    })}] } }`;
+  else if (name) whereCondition = `, where: { name: { _ilike: "%${name}%" } }`;
+  else if (type)
     whereCondition = `, where: { pokemon_v2_pokemontypes: { pokemon_v2_type: { name: { _eq: "${type}" } } } }`;
-  }
 
   const orderBy = orderByName ? "name: asc" : "id: asc";
-
   const query = `
     query all_pokemons {
       all_pokemons: pokemon_v2_pokemon(limit: ${limit}, offset: ${offset}, order_by: { ${orderBy} }${whereCondition}) {
@@ -47,7 +46,6 @@ export async function GetPokemons(
 
   try {
     const res = await PostGraphQl<GetPokemonsResponse>(query);
-    console.log(res);
     return res;
   } catch (error) {
     console.error("Error fetching Pokemons: ", error);
@@ -73,7 +71,6 @@ export async function GetPokemonsEvolutions(
 
   try {
     const res = await PostGraphQl<any>(query);
-    console.log(res);
     return res;
   } catch (error) {
     console.error("Error fetching Pokémon evolutions: ", error);

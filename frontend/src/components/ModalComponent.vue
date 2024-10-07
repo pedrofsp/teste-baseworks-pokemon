@@ -184,6 +184,7 @@ $carousel-border: 20px;
   background-color: $dark-blue;
 }
 
+//TABLET
 @media only screen and (max-width: 767px) {
   .middle {
     background: linear-gradient(
@@ -201,6 +202,7 @@ $carousel-border: 20px;
   }
 }
 
+//MOBILE
 @media only screen and (max-width: 576px) {
   .modal-content {
     width: 90%;

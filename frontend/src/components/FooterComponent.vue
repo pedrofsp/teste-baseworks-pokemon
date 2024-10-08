@@ -1,6 +1,6 @@
 <template>
   <div class="all-footer">
-    <p class="text-center py-2 m-0">Developed by Pedro Presotto</p>
+    <p class="text-center py-2 m-0">By Pedro Presotto 2024</p>
   </div>
 </template>
 

@@ -1,7 +1,6 @@
 export interface Pokemon {
   id: number;
   name: string;
-  url: string;
   type: {
     type_object: {
       name: string;

@@ -13,6 +13,7 @@ O projeto foi elaborado seguindo boas práticas de programação, visando facili
 - Para executar o sistema web localmente, baixe/clone o repositório e acesse o diretório `.frontend/`
 - Execute o comando `npm install` para o download de todos os pacotes utilizados no projeto
 - Por fim execute o comando npm run dev para executar o projeto na porta `http://localhost:5173/` no navegador de sua preferência
+- Para rodar testes unitarios execute o comando de terminal `npm test` no diretório `.frontend/`
 
 ## Sketch do Projeto e Referência visual inicial
 

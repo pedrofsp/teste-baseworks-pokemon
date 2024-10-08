@@ -1,13 +1,15 @@
 <template>
-  <Loading :isLoading="isLoading" />
+  <LoadingComponent :isLoading="isLoading" />
 
   <div class="container mt-3">
-    <form class="d-flex flex-column" @submit.prevent="filterPokemon">
+    <TitleComponent text="Home Page" />
+
+    <form class="d-flex flex-column mt-3" @submit.prevent="filterPokemon">
       <div class="d-flex">
         <input
           v-model="search"
           class="form-control"
-          placeholder="Search by name or id ..."
+          :placeholder="`Search by ${searchById ? 'id' : 'name'}`"
         />
 
         <ButtonComponent class="ms-2" text="Search" color="red" />
@@ -93,9 +95,10 @@
 </template>
 
 <script setup lang="ts">
+import TitleComponent from "../components/TitleComponent.vue";
 import ButtonComponent from "../components/ButtonComponent.vue";
 import TableComponent from "../components/TableComponent.vue";
-import Loading from "../components/Loading.vue";
+import LoadingComponent from "../components/LoadingComponent.vue";
 import { ref, onMounted } from "vue";
 import { GetPokemons } from "../API/PokemonFetch";
 import { Pokemon, GetPokemonsResponse } from "../types/interfaces";

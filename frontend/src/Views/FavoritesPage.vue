@@ -1,14 +1,17 @@
 <template>
+  <LoadingComponent :isLoading="isLoading" />
   <div class="container">
-    <h3 class="my-3">Favorite Pokemons</h3>
+    <div class="my-3">
+      <TitleComponent text="Favorite Pokemons" />
+    </div>
     <TableComponent :pokemons="favPokemons" v-if="!isLoading" />
-    <Loading v-else />
   </div>
 </template>
 
 <script setup lang="ts">
+import TitleComponent from "../components/TitleComponent.vue";
 import TableComponent from "../components/TableComponent.vue";
-import Loading from "../components/Loading.vue";
+import LoadingComponent from "../components/LoadingComponent.vue";
 import { GetPokemons } from "../API/PokemonFetch";
 import { Pokemon } from "../types/interfaces";
 import { onMounted, ref } from "vue";
@@ -37,8 +40,4 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import "../style";
-
-h3 {
-  color: $dark-blue;
-}
 </style>

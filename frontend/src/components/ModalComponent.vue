@@ -15,7 +15,10 @@
           class="content d-flex flex-column justify-content-center px-5 py-4"
         >
           <div class="d-flex justify-content-between">
-            <h3>{{ pokemon.name.toUpperCase() }}</h3>
+            <TitleComponent
+              :text="capitalizeFirstLetter(pokemon.name)"
+              color="white"
+            />
             <font-awesome-icon
               class="close-modal"
               data-bs-dismiss="modal"
@@ -50,11 +53,19 @@
         <div
           class="content d-flex flex-column justify-content-center h-100 px-5 py-4"
         >
-          <h4>Pokemon Stats</h4>
-          <div class="chart-frame rounded">
+          <TitleComponent
+            :isSubtitle="true"
+            text="Pokemon Stats"
+            color="white"
+          />
+          <div class="chart-frame rounded mb-3">
             <Bar id="my-chart-id" class="align-self-center" :data="chartData" />
           </div>
-          <h4 class="my-3">Evolution chain</h4>
+          <TitleComponent
+            :isSubtitle="true"
+            text="Evolution Chain"
+            color="white"
+          />
           <div class="evolution-cards d-flex justify-content-between">
             <div
               v-for="evolution in pokemonEvolutions?.all_pokemon_evolutions[0]
@@ -73,9 +84,11 @@
 <script setup lang="ts">
 import ButtonComponent from "./ButtonComponent.vue";
 import SmallPokemonCard from "./SmallPokemonCard.vue";
+import TitleComponent from "./TitleComponent.vue";
 import { ref } from "vue";
 import { Pokemon, PokemonEvolutions } from "../types/interfaces";
 import { GetPokemonsEvolutions } from "../API/PokemonFetch";
+import { capitalizeFirstLetter } from "../functions/functions";
 import { Modal } from "bootstrap";
 import { Bar } from "vue-chartjs";
 import {
@@ -234,10 +247,6 @@ $carousel-border: 20px;
 
   .ilustration {
     height: calc($carousel-image-height - ($carousel-border * 2) - 50px);
-  }
-
-  h3 {
-    font-size: $lg;
   }
 
   h4 {

@@ -108,13 +108,16 @@ $mobile-reduction: 50px;
   border-bottom: 3px solid $white;
 }
 
-//MOBILE
-@media only screen and (max-width: 576px) {
+//TABLET
+@media only screen and (max-width: 993px) {
   .active {
     background-color: $blue;
     border: none;
   }
+}
 
+//MOBILE
+@media only screen and (max-width: 576px) {
   .icon {
     font-size: calc($plus-size - 10px);
   }

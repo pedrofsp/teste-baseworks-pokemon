@@ -1,6 +1,6 @@
 <template>
   <div class="scroll">
-    <table class="table rounded">
+    <table class="table">
       <thead>
         <tr>
           <th scope="col">ID</th>
@@ -22,7 +22,7 @@
           <td class="align-middle">
             <ModalComponent :pokemon="pokemon" />
           </td>
-          <td @click="FavoriteToggle(pokemon.id)" class="align-middle">
+          <td @click="favoriteToggle(pokemon.id)" class="align-middle">
             <font-awesome-icon
               class="heart-icon"
               v-if="isFavorite(pokemon.id)"
@@ -52,6 +52,7 @@ import SmallPokemonCard from "./SmallPokemonCard.vue";
 import ModalComponent from "./ModalComponent.vue";
 import { capitalizeFirstLetter } from "../functions/functions";
 import { Pokemon } from "../types/interfaces";
+
 const props = defineProps<{
   pokemons: Pokemon[] | [];
 }>();
@@ -63,22 +64,27 @@ onMounted(() => {
   if (savedFavs) favoritePokemons.value = JSON.parse(savedFavs);
 });
 
-const isFavorite = (id: number): boolean => {
+function isFavorite(id: number): boolean {
   return favoritePokemons.value.includes(id);
-};
+}
 
-const FavoriteToggle = (id: number) => {
-  if (isFavorite(id)) {
+// Function to toggle favorite status of a Pokémon
+function favoriteToggle(id: number) {
+  if (isFavorite(id))
     favoritePokemons.value = favoritePokemons.value.filter(
       (favId) => favId !== id
     );
-  } else favoritePokemons.value.push(id);
+  else favoritePokemons.value.push(id);
   localStorage.setItem("favPokemons", JSON.stringify(favoritePokemons.value));
-};
+}
 </script>
 
 <style lang="scss" scoped>
 @import "../style";
+
+.table {
+  border-radius: 100% !important;
+}
 
 .scroll {
   overflow-x: auto;
@@ -86,7 +92,7 @@ const FavoriteToggle = (id: number) => {
 
 th {
   background-color: $purple !important;
-  color: $white !important;
+  color: $light-gray !important;
 }
 
 tr {

@@ -1,6 +1,7 @@
 import { PostGraphQl } from "./BaseCall";
 import { GetPokemonsResponse, PokemonEvolutions } from "../types/interfaces";
 
+//função responsavel por receber instruções de como deve ser a query, afim de retornar os dados já filtrados da forma que o usuario desejar
 export async function GetPokemons(
   limit: number = 20,
   offset: number = 0,
@@ -11,26 +12,17 @@ export async function GetPokemons(
 ): Promise<GetPokemonsResponse | null> {
   let whereCondition = "";
 
-  if (id) {
+  if (id)
     whereCondition = `, where: { id: { _in: [${id.map((id) => `${id},`)}] } }`;
-  } else {
-    // Combine the name and type filter conditions
+  else {
     let conditions: string[] = [];
-
-    if (name) {
-      conditions.push(`name: { _ilike: "%${name}%" }`);
-    }
-
-    if (type) {
+    if (name) conditions.push(`name: { _ilike: "%${name}%" }`);
+    if (type)
       conditions.push(
         `pokemon_v2_pokemontypes: { pokemon_v2_type: { name: { _eq: "${type}" } } }`
       );
-    }
-
-    // Join the conditions using an AND operator to ensure both are applied
-    if (conditions.length > 0) {
+    if (conditions.length > 0)
       whereCondition = `, where: { ${conditions.join(", ")} }`;
-    }
   }
 
   const orderBy = orderByName ? "name: asc" : "id: asc";
@@ -67,6 +59,7 @@ export async function GetPokemons(
   }
 }
 
+//foi necessário uma segunda função para conseguir a cadeia de evolução de um pokemon, uma vez que não consegui uma forma de acessa-la pela query do GetPokemons()
 export async function GetPokemonsEvolutions(
   pokemonId: number
 ): Promise<PokemonEvolutions | null> {

@@ -1,10 +1,14 @@
 <template>
   <button
-    :class="`btn ${props.color} ${disabled ? 'disabled' : ''}`"
+    :class="`btn d-flex ${props.color} ${disabled ? 'disabled' : ''}`"
     :type="type"
   >
     {{ text }}
-    <font-awesome-icon v-if="isFilter" class="icon" :icon="['fas', 'filter']" />
+    <font-awesome-icon
+      v-if="isFilter"
+      class="icon align-self-center ps-2"
+      :icon="['fas', 'filter']"
+    />
   </button>
 </template>
 

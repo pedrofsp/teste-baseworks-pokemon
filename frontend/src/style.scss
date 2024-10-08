@@ -1,9 +1,30 @@
+@font-face {
+  font-family: mountserrat-light;
+  src: url(assets/Fonts/Montserrat/static/Montserrat-Light.ttf);
+}
+
+@font-face {
+  font-family: mountserrat-medium;
+  src: url(assets/Fonts/Montserrat/static/Montserrat-Medium.ttf);
+}
+
+@font-face {
+  font-family: mountserrat-semi-bold;
+  src: url(assets/Fonts/Montserrat/static/Montserrat-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: mountserrat-bold;
+  src: url(assets/Fonts/Montserrat/static/Montserrat-Bold.ttf);
+}
+
 $main-red: #fd1b54;
 $sand: #ffe18d;
 $white: #ffffff;
 $light-gray: #f2f4eb;
 $purple: #cb225d;
 $dark-blue: #050c27;
+$blue: #1a2551;
 $light-blue: #00d9fb;
 
 $xs: 0.75rem; // 12px
@@ -11,3 +32,22 @@ $sm: 0.875rem; // 14px
 $md: 1rem; // 16px (default size)
 $lg: 1.25rem; // 20px
 $xl: 1.5rem; // 24px
+
+.all-app {
+  font-family: mountserrat-light;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: mountserrat-semi-bold;
+}
+
+h3 {
+  font-size: $xl;
+}
+
+h4 {
+  font-size: $lg;
+}

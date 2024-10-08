@@ -9,11 +9,14 @@
       alt="Image of a pokemon"
     />
     <div class="bottom-shadow"></div>
-    <p class="mt-1" v-if="props.name">{{ props.name }}</p>
+    <p class="mt-1" v-if="props.name">
+      {{ capitalizeFirstLetter(props.name) }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import { capitalizeFirstLetter } from "../functions/functions";
 const props = defineProps({
   name: String,
   id: Number,

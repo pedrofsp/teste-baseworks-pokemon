@@ -31,14 +31,14 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <RouterLink
-          class="nav-link text-center"
+          class="nav-link py-2 py-md-1 m-2 text-center"
           :class="{ active: $route.fullPath === '/' }"
           to="/"
         >
           Home
         </RouterLink>
         <RouterLink
-          class="nav-link text-center"
+          class="nav-link py-2 py-md-1 m-2 text-center"
           :class="{ active: $route.fullPath === '/fav' }"
           to="/fav"
         >
@@ -92,8 +92,9 @@ $mobile-reduction: 50px;
 }
 
 .nav-link {
+  font-family: mountserrat-semi-bold;
   color: $light-gray;
-  padding: 0 15px;
+  font-size: $md;
   text-decoration: none;
   &:hover,
   &:visited,
@@ -104,20 +105,18 @@ $mobile-reduction: 50px;
 }
 
 .active {
-  color: $white;
-  text-decoration: underline;
-  &:hover,
-  &:visited,
-  &:focus,
-  &:active {
-    color: $white;
-  }
+  border-bottom: 3px solid $white;
 }
 
 //MOBILE
 @media only screen and (max-width: 576px) {
+  .active {
+    background-color: $blue;
+    border: none;
+  }
+
   .icon {
-    font-size: calc($plus-size - $mobile-reduction);
+    font-size: calc($plus-size - 10px);
   }
 
   .pokemon {

@@ -1,5 +1,6 @@
 <template>
   <ButtonComponent @click="openModal" text="Details" color="purple" />
+
   <div
     v-if="pokemon?.id"
     class="modal fade"
@@ -58,7 +59,7 @@
             text="Pokemon Stats"
             color="white"
           />
-          <div class="chart-frame rounded mb-3">
+          <div class="chart-frame rounded mb-3 mt-2">
             <Bar id="my-chart-id" class="align-self-center" :data="chartData" />
           </div>
           <TitleComponent
@@ -66,7 +67,7 @@
             text="Evolution Chain"
             color="white"
           />
-          <div class="evolution-cards d-flex justify-content-between">
+          <div class="evolution-cards d-flex justify-content-between mt-2">
             <div
               v-for="evolution in pokemonEvolutions?.all_pokemon_evolutions[0]
                 .evolution_chain.species"
@@ -127,14 +128,18 @@ const chartData = ref({
   ],
 });
 
-const openModal = async () => {
+// Função para abrir o modal e carregar dados das evoluções
+function openModal() {
   const modalElement = document.getElementById(`modal-${props.pokemon.id}`);
   if (modalElement) {
-    pokemonEvolutions.value = await GetPokemonsEvolutions(props.pokemon.id);
+    // Busca as evoluções do Pokemon
+    GetPokemonsEvolutions(props.pokemon.id).then((response) => {
+      pokemonEvolutions.value = response;
+    });
     modal.value = new Modal(modalElement);
     modal.value.show();
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -171,6 +176,18 @@ $carousel-border: 20px;
   background-color: $purple;
 }
 
+.middle {
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(253, 27, 84, 1) 0%,
+    rgba(203, 34, 93, 1) 69%,
+    rgba(5, 12, 39, 1) 100%
+  );
+  width: 50px;
+  height: $initial-height;
+}
+
 .right {
   background-color: $main-red;
 }
@@ -191,18 +208,6 @@ $carousel-border: 20px;
 
 .type-icon {
   width: 100px;
-}
-
-.middle {
-  z-index: 1;
-  background: linear-gradient(
-    90deg,
-    rgba(253, 27, 84, 1) 0%,
-    rgba(203, 34, 93, 1) 69%,
-    rgba(5, 12, 39, 1) 100%
-  );
-  width: 50px;
-  height: $initial-height;
 }
 
 .chart-frame {
@@ -247,10 +252,6 @@ $carousel-border: 20px;
 
   .ilustration {
     height: calc($carousel-image-height - ($carousel-border * 2) - 50px);
-  }
-
-  h4 {
-    font-size: $md;
   }
 }
 </style>

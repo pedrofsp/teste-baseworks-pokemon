@@ -16,9 +16,9 @@ O projeto foi elaborado seguindo boas práticas de programação, visando facili
 
 ## Sketch do Projeto e Referência visual inicial
 
-![Reference](./assets/Reference.png)
-
 ![Sketch](./assets/Sketch.jpeg)
+
+![Reference](./assets/Reference.png)
 
 ### Funcionalidades Requeridas Implementadas (Todas)
 
@@ -52,12 +52,3 @@ O projeto foi elaborado seguindo boas práticas de programação, visando facili
 - **Requisições GraphQL**
 - **Bootstrap**
 - **Sass**
-
-## Componentes
-
-- **SmallPokemonCard.vue**: Exibe uma pequena ilustração de um pokemon, com sombra e nome.
-- **ModalComponent.vue**: Um modal que exibe informações detalhadas sobre o Pokémon selecionado.
-- **ButtonComponent.vue**: Um componente de botão utilizado ao longo da aplicação.
-- **LoadingComponent.vue**: Exibe um indicador de carregamento enquanto os dados estão sendo buscados.
-- **NavbarComponent.vue**: Um componente de barra de navegação que permite acessar diferentes seções da aplicação.
-- **TableComponent.vue**: Exibe uma tabela com informações sobre os Pokémons, facilitando a visualização e comparação.

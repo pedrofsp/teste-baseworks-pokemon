@@ -101,7 +101,7 @@ import TableComponent from "../components/TableComponent.vue";
 import LoadingComponent from "../components/LoadingComponent.vue";
 import { ref, onMounted } from "vue";
 import { GetPokemons } from "../API/PokemonFetch";
-import { Pokemon, GetPokemonsResponse } from "../types/interfaces";
+import { Pokemon } from "../types/interfaces";
 
 let pokemons = ref<Pokemon[]>([]);
 let limit = ref<number>(20);
@@ -113,26 +113,12 @@ let showFilter = ref<boolean>(false);
 let isLoading = ref<boolean>(true);
 let pageCounter = ref<number>(1);
 
-const SetValues = async (response: GetPokemonsResponse) => {
-  pokemons.value = response.all_pokemons;
-};
+onMounted(() => {
+  FetchData();
+});
 
-const FetchNext = async () => {
-  pageCounter.value++;
-  offset.value += limit.value;
-  await FetchData();
-};
-
-const FetchPrevious = async () => {
-  if (offset.value == 0) return null;
-  pageCounter.value--;
-  if (offset.value > 0) {
-    offset.value -= limit.value;
-    await FetchData();
-  }
-};
-
-const FetchData = async (id?: number) => {
+// Fetch dos pokemons, passando filtros, limite e entre outros que estejam aplicados
+async function FetchData(id?: number) {
   isLoading.value = true;
   const ids = id ? [id] : undefined;
   const response = await GetPokemons(
@@ -144,40 +130,43 @@ const FetchData = async (id?: number) => {
     selectedType.value
   );
   isLoading.value = false;
-  if (response) SetValues(response);
-};
+  if (response) pokemons.value = response.all_pokemons;
+}
 
-const filterPokemon = async () => {
+function FetchNext() {
+  pageCounter.value++;
+  offset.value += limit.value;
+  FetchData();
+}
+
+function FetchPrevious() {
+  if (offset.value == 0) return;
+  pageCounter.value--;
+  offset.value -= limit.value;
+  FetchData();
+}
+
+// Função chamada ao submeter uma pesquisa por nome ou id
+async function filterPokemon() {
   offset.value = 0;
-
-  if (search.value) {
-    if (searchById.value) {
-      const id = parseInt(search.value, 10);
-      if (!isNaN(id)) {
-        await FetchData(id);
-      }
-    } else {
-      await FetchData();
-    }
-  } else {
+  const id = searchById.value ? parseInt(search.value, 10) : undefined;
+  if (search.value && (!searchById.value || (id !== undefined && !isNaN(id))))
+    await FetchData(id);
+  else {
     pokemons.value = [];
     await FetchData();
   }
-};
+}
 
-const toggleFilter = (event: Event) => {
+function toggleFilter(event: Event) {
   event.preventDefault();
   showFilter.value = !showFilter.value;
-};
+}
 
-const Reset = (event: Event) => {
+function Reset(event: Event) {
   event.preventDefault();
   location.reload();
-};
-
-onMounted(() => {
-  FetchData();
-});
+}
 </script>
 
 <style scoped lang="scss">

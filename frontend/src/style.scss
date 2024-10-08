@@ -1,3 +1,4 @@
+//Mountserrat font
 @font-face {
   font-family: mountserrat-light;
   src: url(assets/Fonts/Montserrat/static/Montserrat-Light.ttf);
@@ -18,6 +19,7 @@
   src: url(assets/Fonts/Montserrat/static/Montserrat-Bold.ttf);
 }
 
+//Project colors
 $main-red: #fd1b54;
 $sand: #ffe18d;
 $white: #ffffff;
@@ -27,27 +29,22 @@ $dark-blue: #050c27;
 $blue: #1a2551;
 $light-blue: #00d9fb;
 
-$xs: 0.75rem; // 12px
-$sm: 0.875rem; // 14px
-$md: 1rem; // 16px (default size)
-$lg: 1.25rem; // 20px
-$xl: 1.5rem; // 24px
+//Font sizes
+$xs: 0.75rem;
+$sm: 0.875rem;
+$md: 1rem;
+$lg: 1.25rem;
+$xl: 1.5rem;
 
+//Fonte base do app
 .all-app {
   font-family: mountserrat-light;
 }
 
+//Fonte base dos titulos
 h1,
 h2,
 h3,
 h4 {
   font-family: mountserrat-semi-bold;
-}
-
-h3 {
-  font-size: $xl;
-}
-
-h4 {
-  font-size: $lg;
 }

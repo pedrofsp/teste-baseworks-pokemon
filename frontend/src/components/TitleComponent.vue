@@ -21,6 +21,10 @@ h3 {
   font-size: $xl;
 }
 
+h4 {
+  font-size: $lg;
+}
+
 .white {
   color: $white;
   text-shadow: 2px 2px 0 $dark-blue;

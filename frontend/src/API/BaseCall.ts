@@ -1,5 +1,6 @@
 const graphQLUrl = "https://beta.pokeapi.co/graphql/v1beta";
 
+//função que faz o post request no formato de graphQL
 async function PostGraphQl<T>(query: string, variables?: any): Promise<T> {
   try {
     const res = await fetch(graphQLUrl, {
